@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- 引入JDBC配置 -->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+
+    <!-- 注入service层 -->
+    <context:component-scan base-package="com.secondHand.service"/>
+
+    <!-- 配置链接数据 -->
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+        <!--初始化连接数量-->
+        <property name="initialSize" value="${initialSize}"/>
+        <!--最大连接数据库连接数-->
+        <property name="maxActive" value="${maxActive}"/>
+        <!--最大等待连接中的数量-->
+        <property name="maxIdle" value="${maxIdle}"/>
+        <!--最小等待连接中的数量-->
+        <property name="minIdle" value="${minIdle}"/>
+        <!-- 最大等待秒数 -->
+        <property name="maxWait" value="${maxWait}"/>
+    </bean>
+
+    <!--配置sqlSessionFactory 并将数据源注入-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!-- 数据源 -->
+        <property name="dataSource" ref="dataSource"/>
+        <!-- mapping配置 -->
+        <property name="mapperLocations" value="classpath:/mapping/*.xml"/>
+        <!-- mybatis配置 -->
+        <property name="configLocation" value="classpath:/mybatis-config.xml"/>
+    </bean>
+
+    <!-- 扫描dao -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.secondHand.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+
+    <!-- 事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+</beans>

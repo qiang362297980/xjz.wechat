@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxAdviceDao">
+
+    <sql id="advice">
+        a.id AS "id",
+        a.open_id AS "openId",
+        a.context AS "context",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="advice" type="com.secondHand.entity.XcxAdvice">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="add">
+        INSERT INTO xcx_advice (
+            id,
+            open_id,
+            context,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{id},
+            #{openId},
+            #{context},
+            #{createDate},
+            #{updateDate},
+            #{delFlag}
+        )
+    </insert>
+
+    <select id="get" resultMap="advice">
+        SELECT
+            <include refid="advice"/>
+        FROM
+            xcx_advice a
+        WHERE
+            a.id = #{id}
+    </select>
+
+    <update id="update">
+        UPDATE xcx_advice SET
+            open_id = #{openId},
+            context = #{context},
+            create_date = #{createDate},
+            update_date = #{updateDate},
+            del_flag = #{delFlag}
+        WHERE id = #{id}
+    </update>
+</mapper>

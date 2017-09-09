@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxAssessDao">
+
+    <sql id="assess">
+        a.id AS "id",
+        a.goods_id AS "goodsId",
+        a.p_open_id AS "pOpenId",
+        a.open_id AS "openId",
+        a.name AS "name",
+        a.context AS "context",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="assess" type="com.secondHand.entity.XcxGoodsAssess">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+        <!--<result column="parent_id" property="parentId" jdbcType="VARCHAR"/>-->
+        <result column="p_open_id" property="pOpenId" jdbcType="VARCHAR"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="context" property="context" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="add">
+        INSERT INTO xcx_goods_assess (
+            id,
+            goods_id,
+            p_open_id,
+            open_id,
+            name,
+            context,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{id},
+            #{goodsId},
+            #{pOpenId},
+            #{openId},
+            #{name},
+            #{context},
+            #{createDate},
+            #{updateDate},
+            #{delFlag}
+        )
+    </insert>
+
+    <select id="get" resultMap="assess">
+        SELECT
+            <include refid="assess"/>
+        FROM
+            xcx_goods_assess a
+        WHERE
+            a.id = #{id}
+    </select>
+
+    <select id="getList" resultMap="assess">
+        SELECT
+            <include refid="assess"/>
+        FROM
+            xcx_goods_assess a
+        <where>
+            a.del_flag = '0' AND a.goods_id = #{goodsId}
+        </where>
+        ORDER BY a.create_date DESC
+    </select>
+
+    <select id="getParentType" resultType="String">
+        SELECT
+            a.parent_id
+        FROM
+            xcx_goods_assess a
+        WHERE
+            a.del_flag = '0' and a.goods_id = #{goodsId}
+        GROUP BY
+            a.parent_id
+    </select>
+
+    <!--<select id="getByParentId" resultMap="assess">-->
+        <!--SELECT-->
+            <!--<include refid="assess"/>-->
+        <!--FROM-->
+            <!--xcx_goods_assess a-->
+        <!--WHERE-->
+            <!--a.del_flag = '0' and a.goods_id = #{goodsId} and a.parent_id = #{parentId}-->
+        <!--ORDER BY a.create_date DESC-->
+    <!--</select>-->
+
+    <select id="getListByOpenId" resultMap="assess">
+        SELECT
+            <include refid="assess"/>
+        FROM
+            xcx_goods_assess a
+        WHERE
+            a.del_flag = '0' and a.open_id = #{openId}
+--         GROUP BY a.parent_id
+    </select>
+
+    <select id="getMyNews" resultMap="assess">
+        SELECT
+            <include refid="assess"/>
+        FROM
+            xcx_goods_assess a
+        WHERE
+            a.del_flag = '0' AND a.p_open_id = #{pOpenId}
+        ORDER BY
+            a.create_date DESC
+    </select>
+
+    <update id="update">
+        UPDATE xcx_goods_assess SET
+            goods_id = #{goodsId},
+            open_id = #{openId},
+            name = #{name},
+            context = #{context},
+            create_date = #{createDate},
+            update_date = #{updateDate},
+            del_flag = #{delFlag}
+        WHERE id = #{id}
+    </update>
+</mapper>

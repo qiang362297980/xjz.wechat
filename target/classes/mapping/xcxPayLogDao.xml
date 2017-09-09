@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxPayLogDao">
+
+    <sql id="payLog">
+        a.id AS "id",
+        a.open_id AS "openId",
+        a.order_num AS "orderNum",
+        a.goods_id AS "goodsId",
+        a.goods_name AS "goodsName",
+        a.money AS "money",
+        a.pay_type AS "payType",
+        a.status AS "status",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="payLog" type="com.secondHand.entity.XcxPayLog">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="order_num" property="orderNum" jdbcType="VARCHAR"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR"/>
+        <result column="money" property="money" jdbcType="VARCHAR"/>
+        <result column="pay_type" property="payType" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="payLog">
+        SELECT
+        <include refid="payLog"/>
+        FROM
+        store_pay_log a
+        WHERE
+        a.id = #{id}
+    </select>
+
+    <select id="getByOpenId" resultMap="payLog">
+        SELECT
+        <include refid="payLog"/>
+        FROM
+        store_pay_log a
+        WHERE
+        a.del_flag = '0' and a.status = '1' and a.open_id = #{openId}
+    </select>
+
+    <select id="getByOrderNum" resultMap="payLog">
+        SELECT
+          <include refid="payLog"/>
+        FROM
+          store_pay_log a
+        WHERE
+          a.del_flag = '0' and a.order_num = #{orderNum}
+    </select>
+
+    <insert id="add">
+        INSERT INTO store_pay_log (
+        id,
+        open_id,
+        order_num,
+        goods_id,
+        goods_name,
+        money,
+        pay_type,
+        status,
+        create_date,
+        update_date,
+        del_flag
+        ) VALUES (
+        #{id},
+        #{openId},
+        #{orderNum},
+        #{goodsId},
+        #{goodsName},
+        #{money},
+        #{payType},
+        #{status},
+        #{createDate},
+        #{updateDate},
+        #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE store_pay_log SET
+            open_id = #{openId},
+            order_num = #{orderNum},
+            goods_id = #{goodsId},
+            goods_name = #{goodsName},
+            money = #{money},
+            pay_type = #{payType},
+            status = #{status},
+            create_date = #{createDate},
+            update_date = #{updateDate},
+            del_flag = #{delFlag}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

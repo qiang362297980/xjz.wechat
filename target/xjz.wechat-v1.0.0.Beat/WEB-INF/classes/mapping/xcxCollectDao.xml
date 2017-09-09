@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxCollectDao">
+
+    <sql id="collect">
+        a.id AS "id",
+        a.open_id AS "openId",
+        a.goods_id AS "goodsId",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="collect" type="com.secondHand.entity.XcxCollect">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="goods_id" property="goodsId" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="collect">
+        SELECT
+          <include refid="collect"/>
+        FROM
+          xcx_collect a
+        WHERE
+          a.id = #{id}
+    </select>
+
+    <select id="getByOpenId" resultMap="collect">
+        SELECT
+          <include refid="collect"/>
+        FROM
+          xcx_collect a
+        <where>
+            a.del_flag = '0'
+            <if test="openId != null and openId != ''">
+                and a.open_id = #{openId}
+            </if>
+            <if test="goodsId != null and goodsId != ''">
+                AND a.goods_id = #{goodsId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="add">
+        INSERT INTO xcx_collect (
+            id,
+            open_id,
+            goods_id,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{id},
+            #{openId},
+            #{goodsId},
+            #{createDate},
+            #{updateDate},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE xcx_collect a SET
+            a.open_id = #{openId},
+            a.goods_id = #{goodsId},
+            a.create_date = #{createDate},
+            a.update_date = #{updateDate},
+            a.del_flag = #{delFlag}
+        WHERE a.id = #{id}
+    </update>
+
+</mapper>

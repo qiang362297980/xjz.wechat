@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxSmsCodeDao">
+
+    <sql id="code">
+        a.id AS "id",
+        a.mobile AS "mobile",
+        a.code AS "code",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="code" type="com.secondHand.entity.XcxSmsCode">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="code">
+        SELECT
+          <include refid="code"/>
+        FROM
+          xcx_sms_code a
+        WHERE
+          a.id = #{id}
+    </select>
+
+    <select id="check" resultMap="code">
+        SELECT
+          <include refid="code"/>
+        FROM
+          xcx_sms_code a
+        WHERE
+          a.del_flag = '0'
+          AND a.mobile = #{mobile} AND a.code = #{code}
+          AND  TIMESTAMPDIFF(SECOND,a.create_date,NOW()) > 120
+    </select>
+
+    <insert id="add">
+        INSERT INTO xcx_sms_code (
+            id,
+            mobile,
+            code,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{id},
+            #{mobile},
+            #{code},
+            #{createDate},
+            #{updateDate},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE xcx_sms_code SET
+            a.mobile = #{mobile},
+            a.code = #{code},
+            a.create_date = #{createDate},
+            a.update_date = #{updateDate},
+            a.del_flag = #{delFlag}
+        WHERE a.id = #{id}
+    </update>
+
+</mapper>

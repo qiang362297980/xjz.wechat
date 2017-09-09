@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.StoreGoodsDao">
+
+    <sql id="sGoods">
+        a.id AS "id",
+        a.name AS "name",
+        a.address AS "address",
+        a.view_pic_url AS "viewPicUrl",
+        a.pic_url AS "picUrl",
+        a.price AS "price",
+        a.old_price AS "oldPrice",
+        a.yun_fee AS "yunFee",
+        a.description AS "description",
+        a.sales_volume AS "salesVolume",
+        a.degree AS "degree",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="sGoods" type="com.secondHand.entity.StoreGoods">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="address" property="address" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="view_pic_url" property="viewPicUrl" jdbcType="VARCHAR"/>
+        <result column="pic_url" property="picUrl" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="VARCHAR"/>
+        <result column="old_price" property="oldPrice" jdbcType="VARCHAR"/>
+        <result column="yun_fee" property="yunFee" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="sales_volume" property="salesVolume" jdbcType="INTEGER"/>
+        <result column="degree" property="degree" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="sGoods">
+        SELECT
+          <include refid="sGoods"/>
+        FROM
+          store_goods a
+        WHERE
+          a.id = #{id}
+    </select>
+
+    <select id="getGoods" resultMap="sGoods">
+        SELECT
+          <include refid="sGoods"/>
+        FROM
+          store_goods a
+        <where>
+            a.del_flag = '0'
+            <if test="name != '' and name != null">
+                AND a.name LIKE #{name}
+            </if>
+            <if test="address != '' and address != null">
+                OR a.address LIKE #{address}
+            </if>
+            <if test="degree != '' and degree != null">
+                OR a.degree LIKE #{degree}
+            </if>
+            <if test="description != null and description != ''">
+                OR a.description LIKE #{description}
+            </if>
+        </where>
+        ORDER BY a.sales_volume DESC
+    </select>
+
+    <insert id="add">
+        INSERT INTO store_goods (
+            id,
+            name,
+            address,
+            view_pic_url,
+            pic_url,
+            price,
+            old_price,
+            yun_fee,
+            description,
+            sales_volume,
+            degree,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{id},
+            #{name},
+            #{address},
+            #{viewPicUrl},
+            #{picUrl},
+            #{price},
+            #{oldPrice},
+            #{yunFee},
+            #{description},
+            #{salesVolume},
+            #{degree},
+            #{createDate},
+            #{updateDate},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE store_goods a SET
+            a.name = #{name},
+            a.address = #{address},
+            a.view_pic_url = #{viewPicUrl},
+            a.pic_url = #{picUrl},
+            a.price = #{price},
+            a.old_price = #{oldPrice},
+            a.yun_fee = #{yunFee},
+            a.description = #{description},
+            a.sales_volume = #{salesVolume},
+            a.degree = #{degree},
+            a.create_date = #{createDate},
+            a.update_date = #{updateDate},
+            a.del_flag = #{delFlag}
+        WHERE a.id = #{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxGoodsDao">
+
+    <sql id="goods">
+        a.id AS "id",
+        a.open_id AS "openId",
+        a.mobile AS "mobile",
+        a.user_name AS "userName",
+        a.goods_name AS "goodsName",
+        a.school AS "school",
+        a.description AS "description",
+        a.url AS "url",
+        a.price AS "price",
+        a.old_price AS "oldPrice",
+        a.degree AS "degree",
+        a.status AS "status",
+        a.type AS "type",
+        a.remark AS "remark",
+        a.look_num AS "lookNum",
+        a.zan_num AS "zanNum",
+        a.assess_num AS "assessNum",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="goods" type="com.secondHand.entity.XcxGoods">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="goods_name" property="goodName" jdbcType="VARCHAR"/>
+        <result column="school" property="school" jdbcType="VARCHAR"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="price" property="price" jdbcType="VARCHAR"/>
+        <result column="old_price" property="oldPrice" jdbcType="VARCHAR"/>
+        <result column="degree" property="degree" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="look_num" property="lookNum" jdbcType="INTEGER"/>
+        <result column="zan_num" property="zanNum" jdbcType="INTEGER"/>
+        <result column="assess_num" property="assessNum" jdbcType="INTEGER"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="goods">
+        SELECT
+          <include refid="goods"/>
+        FROM
+          xcx_goods a
+        WHERE
+          a.id = #{id}
+    </select>
+
+    <select id="getGoods" resultMap="goods">
+        SELECT
+          <include refid="goods"/>
+        FROM
+          xcx_goods a
+        <where>
+            a.del_flag = '0' AND a.status = '在售'
+            <if test="openId != null and openId != ''">
+                AND a.open_id = #{openId}
+            </if>
+            <if test="mobile != '' and mobile != null">
+                AND a.mobile LIKE #{mobile}
+            </if>
+            <if test="userName != '' and userName != null">
+                OR a.user_name LIKE #{userName}
+            </if>
+            <if test="goodsName != '' and goodsName != null">
+                OR a.goods_name LIKE #{goodsName}
+            </if>
+            <if test="school != '' and school != null">
+                OR a.school LIKE #{school}
+            </if>
+            <if test="description != '' and description != null">
+                OR a.description LIKE #{description}
+            </if>
+            <if test="price != '' and price != null">
+                OR a.price LIKE #{price}
+            </if>
+            <if test="oldPrice != '' and oldPrice != null">
+                OR a.old_price LIKE #{oldPrice}
+            </if>
+            <if test="degree != '' and degree != null">
+                OR a.degree LIKE #{degree}
+            </if>
+            <if test="status != '' and status != null">
+                AND a.status = #{status}
+            </if>
+        </where>
+        ORDER BY a.create_date DESC
+    </select>
+
+    <select id="getMyGoods" resultMap="goods">
+        SELECT
+            <include refid="goods"/>
+        FROM
+            xcx_goods a
+        WHERE
+            a.del_flag = '0' AND a.open_id = #{openId}
+        ORDER BY
+            a.create_date DESC
+    </select>
+
+    <select id="goodsNum" resultType="int">
+        SELECT
+          count(*)
+        FROM
+          xcx_goods a
+        WHERE
+          a.open_id = #{openId}
+    </select>
+
+    <insert id="add">
+        INSERT INTO xcx_goods (
+            id,
+            open_id,
+            mobile,
+            user_name,
+            goods_name,
+            school,
+            description,
+            url,
+            price,
+            old_price,
+            degree,
+            status,
+            type,
+            remark,
+            look_num,
+            zan_num,
+            assess_num,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{id},
+            #{openId},
+            #{mobile},
+            #{userName},
+            #{goodsName},
+            #{school},
+            #{description},
+            #{url},
+            #{price},
+            #{oldPrice},
+            #{degree},
+            #{status},
+            #{type},
+            #{remark},
+            #{lookNum},
+            #{zanNum},
+            #{assessNum},
+            #{createDate},
+            #{updateDate},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE xcx_goods a SET
+            a.open_id = #{openId},
+            a.mobile = #{mobile},
+            a.user_name = #{userName},
+            a.goods_name = #{goodsName},
+            a.school = #{school},
+            a.description = #{description},
+            a.url = #{url},
+            a.price = #{price},
+            a.old_price = #{oldPrice},
+            a.degree = #{degree},
+            a.status = #{status},
+            a.type = #{type},
+            a.remark = #{remark},
+            a.look_num = #{lookNum},
+            a.zan_num = #{zanNum},
+            a.assess_num = #{assessNum},
+            a.create_date = #{createDate},
+            a.update_date = #{updateDate},
+            a.del_flag = #{delFlag}
+        WHERE a.id = #{id}
+    </update>
+
+</mapper>

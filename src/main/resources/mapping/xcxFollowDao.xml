@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxFollowDao">
+
+    <sql id="follow">
+        a.id AS "id",
+        a.u_open_id AS "uOpenId",
+        a.a_open_id AS "aOpenId",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+    
+    <resultMap id="follow" type="com.secondHand.entity.XcxFollow">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="u_open_id" property="uOpenId" jdbcType="VARCHAR"/>
+        <result column="a_open_id" property="aOpenId" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="follow">
+        SELECT
+          <include refid="follow"/>
+        FROM
+          xcx_follow a
+        WHERE
+          a.id = #{id}
+    </select>
+
+    <select id="getByYou" resultMap="follow">
+        SELECT
+          <include refid="follow"/>
+        FROM
+          xcx_follow a
+        WHERE
+            a.del_flag = '0' AND a.u_open_id = #{uOpenId}
+    </select>
+
+    <select id="getFollowLog" resultMap="follow">
+        SELECT
+            <include refid="follow"/>
+        FROM
+            xcx_follow a
+        WHERE  a.u_open_id = #{uOpenId} AND a.a_open_id = #{aOpenId}
+    </select>
+
+    <insert id="add">
+        INSERT INTO xcx_follow (
+            u_open_id,
+            a_open_id,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{uOpenId},
+            #{aOpenId},
+            now(),
+            now(),
+            '0'
+        )
+    </insert>
+
+     <select id="getCountFollowNumWithOpenId" parameterType="java.lang.String" 
+     		resultType="java.lang.Integer" >
+        SELECT  count(1) FROM xcx_follow a
+        WHERE a.del_flag = '0' AND a.u_open_id = #{uOpenId}
+    </select>
+    
+    <update id="increaseFollowWithOpenId" parameterType="com.secondHand.entity.XcxFollow">
+    	update xcx_follow set del_flag = '0' , update_date = now()
+    	where u_open_id = #{uOpenId} and a_open_id = #{aOpenId}
+    </update>
+    
+    <update id="reduceFollowWithOpenId" parameterType="com.secondHand.entity.XcxFollow">
+    	update xcx_follow set del_flag = '1'  , update_date = now()
+    	where u_open_id = #{uOpenId} and a_open_id = #{aOpenId}
+    </update>
+	
+</mapper>

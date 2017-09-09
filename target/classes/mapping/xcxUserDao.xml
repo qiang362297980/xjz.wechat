@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.secondHand.dao.XcxUserDao">
+
+    <sql id="xcxUser">
+        a.id AS "id",
+        a.mobile AS "mobile",
+        a.open_id AS "openId",
+        a.user_name AS "userName",
+        a.sex AS "sex",
+        a.head_url AS "headUrl",
+        a.area AS "area",
+        a.status AS "status",
+        a.follow_num AS "followNum",
+        a.look_num AS "lookNum",
+        a.is_news AS "isNews",
+        a.look_news_date AS "lookNewsDate",
+        a.create_date AS "createDate",
+        a.update_date AS "updateDate",
+        a.del_flag AS "delFlag"
+    </sql>
+
+    <resultMap id="xcxUser" type="com.secondHand.entity.XcxUser">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="mobile" property="mobile" jdbcType="VARCHAR"/>
+        <result column="open_id" property="openId" jdbcType="VARCHAR"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="sex" property="sex" jdbcType="VARCHAR"/>
+        <result column="head_url" property="headUrl" jdbcType="VARCHAR"/>
+        <result column="area" property="area" jdbcType="VARCHAR"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <result column="follow_num" property="followNum" jdbcType="INTEGER"/>
+        <result column="look_num" property="lookNum" jdbcType="INTEGER"/>
+        <result column="is_news" property="isNews" jdbcType="INTEGER"/>
+        <result column="look_news_date" property="lookNewsDate" jdbcType="TIMESTAMP"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <select id="get" resultMap="xcxUser">
+        SELECT
+          <include refid="xcxUser"/>
+        FROM
+          xcx_user a
+        WHERE
+          a.id = #{id}
+    </select>
+
+    <select id="getByOpenId" resultMap="xcxUser">
+        SELECT
+            <include refid="xcxUser"/>
+        FROM
+            xcx_user a
+        WHERE
+            a.del_flag = '0' and a.open_id = #{openId}
+    </select>
+
+    <select id="getByMobile" resultMap="xcxUser">
+        SELECT
+          <include refid="xcxUser"/>
+        FROM
+          xcx_user a
+        WHERE
+          a.del_flag = '0' and a.mobile = #{mobile}
+    </select>
+
+    <insert id="add">
+        INSERT INTO xcx_user (
+            id,
+            mobile,
+            open_id,
+            user_name,
+            sex,
+            head_url,
+            area,
+            status,
+            follow_num,
+            look_num,
+            is_news,
+            look_news_date,
+            create_date,
+            update_date,
+            del_flag
+        ) VALUES (
+            #{id},
+            #{mobile},
+            #{openId},
+            #{userName},
+            #{sex},
+            #{headUrl},
+            #{area},
+            #{status},
+            #{followNum},
+            #{lookNum},
+            #{isNews},
+            #{lookNewsDate},
+            #{createDate},
+            #{updateDate},
+            #{delFlag}
+        )
+    </insert>
+
+    <update id="update">
+        UPDATE xcx_user a SET
+            a.mobile = #{mobile},
+            a.open_id = #{openId},
+            a.user_name = #{userName},
+            a.sex = #{sex},
+            a.head_url = #{headUrl},
+            a.area = #{area},
+            a.status = #{status},
+            a.follow_num = #{followNum},
+            a.look_num = #{lookNum},
+            a.is_news = #{isNews},
+            a.look_news_date = #{lookNewsDate},
+            a.create_date = #{createDate},
+            a.update_date = #{updateDate},
+            a.del_flag = #{delFlag}
+        WHERE a.id = #{id}
+    </update>
+    
+	 <update id="increaseFollowNumWithOpenId" parameterType="java.lang.String">  
+    	update xcx_user set follow_num = IFNULL(follow_num,0) + 1 where open_id = #{opendid}
+    </update>
+    
+     <update id="reduceFollowNumWithOpenId" parameterType="java.lang.String">  
+    	update xcx_user set follow_num = IFNULL(follow_num,0) - 1 where open_id = #{opendid}
+    </update>
+</mapper>
